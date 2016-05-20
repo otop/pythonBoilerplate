@@ -11,4 +11,7 @@ flake8 . --output-file flake8.txt
 
 flake8_junit flake8.txt flake8_junit.xml
 
+echo "\n"
+flake8 --statistics --count -qq
+
 rm flake8.txt
