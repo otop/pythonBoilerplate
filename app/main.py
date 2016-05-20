@@ -35,12 +35,14 @@ def super_tracer(func):
 
 def statistics(dictionary):
     values = dictionary.values()
-    max_val = max(values)
+    max_val = values[2]     # this is the first line of function
     d = OrderedDict([(k, v * 100.0 / max_val) for k, v in dictionary.items()])
 
     for k, v in d.items():
         prefix = colorama.Fore.BLUE
-        if 80 < v <= 100:
+        if v > 100:
+            prefix = colorama.Fore.MAGENTA
+        elif 80 < v <= 100:
             prefix = colorama.Fore.RED
         elif 60 < v <= 80:
             prefix = colorama.Fore.YELLOW
@@ -67,6 +69,8 @@ def super_duper_func(a, b, c):
     if b > c:
         return 2
     if c < a:
+        for el in range(100):
+            a += 1
         return a + b
     return b + a + c
 
@@ -90,7 +94,7 @@ if __name__ == "__main__":
     f(14)
     f(14)
     f(14)
-    for k, v in LOOKUP_CACHE.items():
+    for func_name, dt in LOOKUP_CACHE.items():
         pluses = "+++++++++++++"
-        print pluses + k + pluses
-        statistics(v)
+        print pluses + func_name + pluses
+        statistics(dt)
