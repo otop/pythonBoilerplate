@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MAX_COMPLEXITY="B"
+MAX_COMPLEXITY="D"      # can be from "A" to "F" where "A" is the lowest
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${DIR}/env/bin/activate
