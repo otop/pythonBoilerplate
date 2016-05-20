@@ -4,11 +4,14 @@ from collections import OrderedDict
 
 import colorama
 
-CACHE = OrderedDict()
+# {"func_first_line" : {"line": count}, ...}
+LOOKUP_CACHE = dict()
 
 
 def super_tracer(func):
     def inner(*args, **kwargs):
+        global LOOKUP_CACHE
+
         tracer = trace.Trace(count=True, trace=False)
         result = tracer.runfunc(func, *args, **kwargs)
         metrics = tracer.results()
@@ -16,13 +19,14 @@ def super_tracer(func):
         func_data, start_func_line_no = inspect.getsourcelines(func)
         func_data = [i.rstrip() for i in func_data]
 
-        global CACHE
-        if not CACHE:
-            CACHE = OrderedDict([(i, 0) for i in func_data])
+        func_first_line = func_data[1]  # because 0 is super_trace decorator
+        data = LOOKUP_CACHE.get(func_first_line)
+        if not data:
+            LOOKUP_CACHE[func_first_line] = OrderedDict([(i, 0) for i in func_data])
 
-        for k, v in metrics.counts.items():
-            file_line_number = k[1]
-            CACHE[func_data[file_line_number - start_func_line_no]] += v
+        for key, value in metrics.counts.items():
+            file_line_number = key[1]       # since metrics.counts' key will be (file_name, count)
+            LOOKUP_CACHE[func_first_line][func_data[file_line_number - start_func_line_no]] += value
 
         return result
 
@@ -56,7 +60,24 @@ def f(a):
     return "hello"
 
 
+@super_tracer
+def super_duper_func(a, b, c):
+    if a < b:
+        return 1
+    if b > c:
+        return 2
+    if c < a:
+        return a + b
+    return b + a + c
+
+
 if __name__ == "__main__":
+    super_duper_func(1, 2, 3)
+    super_duper_func(4, 8, 21)
+    super_duper_func(7, 1, 34)
+    super_duper_func(8, 45, 0)
+    super_duper_func(2, 8, 1)
+    super_duper_func(90, 4, 7)
     f(3)
     f(3)
     f(3)
@@ -64,4 +85,12 @@ if __name__ == "__main__":
     f(1)
     f(14)
     f(11)
-    statistics(CACHE)
+    f(14)
+    f(14)
+    f(14)
+    f(14)
+    f(14)
+    for k, v in LOOKUP_CACHE.items():
+        pluses = "+++++++++++++"
+        print pluses + k + pluses
+        statistics(v)
