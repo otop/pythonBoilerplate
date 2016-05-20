@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-source ./env/bin/activate
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/env/bin/activate
 export PYTHONPATH=${PYTHONPATH}:${DIR}
 nosetests . --config=nose.cfg
 
