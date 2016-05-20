@@ -44,7 +44,7 @@ def statistics(dictionary):
             prefix = colorama.Fore.GREEN
         elif 20 < v <= 40:
             prefix = colorama.Fore.CYAN
-        print(prefix + k + "\t\t" + str(v))
+        print(prefix + k + "\t\t" + "{0:.0f}%".format(v))
 
     print(colorama.Style.RESET_ALL)
 
