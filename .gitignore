@@ -93,6 +93,7 @@ nosetests.xml
 coverage.xml
 flake8.txt
 flake8_junit.xml
+flake_report.html
 complexity.xml
 *,cover
 
